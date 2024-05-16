@@ -149,4 +149,32 @@ button {
   left: 0;
 }
 
+.stopwatch-container {
+  position: fixed;
+  width: 200px;
+  height: 100px;
+  background-color: azure;
+  right: 30px;
+  bottom: 30px;
+  border-radius: 20px;
+}
 
+.stopwatch-time {
+  font-size: 20px;
+  color: black;
+}
+.startbutton {
+  margin: auto;
+  display: flex;
+  position: fixed;
+  height: 70px;
+  width: 70px;
+  border-radius: 100%;
+  background-color: rgb(5, 192, 5);
+  right: 30px;
+  bottom: 30px;
+  cursor: pointer;
+  text-align: center;
+  align-items: center;
+  font-size: 1rem;
+}

@@ -1,5 +1,12 @@
 import React, { useRef, useState, useEffect } from 'react'
-import { initializeApp } from 'firebase/app'
+import { FaHistory, FaUser } from "react-icons/fa";
+import { MdCancel, MdArrowBack } from "react-icons/md"
+import { 
+    createUserWithEmailAndPassword, 
+    onAuthStateChanged,
+    signInWithEmailAndPassword,
+    signOut
+} from "firebase/auth"
 import { 
   getFirestore, collection, getDocs
 } from 'firebase/firestore'
@@ -8,31 +15,20 @@ import { app, auth, db } from './firebase-config'
 
 
 
+
+
 function GymLog() {
     const currentDate = new Date().toLocaleDateString()
     const unit = "lb"
-    const [Exercises, setExercises] = useState([{ name: "Bench Press", weight: 135, reps: 8, sets: 5}]);
+    const [Exercises, setExercises] = useState([{ name: "Bench Press", weight: 135, reps: 8, sets: 5 }]);
 
     const dragExercise = useRef(0)
     const draggedOverExercise = useRef(0)
 
     const [newExercise, setNewExercise] = useState({ name: "", weight: null , reps: null , sets: null})
-
-    const [exercisehist, setExerciseHist] = useState([])
-    const historyCollectionRef = collection(db, "History")
-    {/*useEffect(() => {
-        const getExerciseHist = async () => {
-            //read from data
-            //set exercisehist
-            try {
-                const data = await getDocs(historyCollectionRef)
-                console.log(data)
-            } catch(error) {
-                console.log(error)
-            }
-
-        }
-    })*/}
+    
+    
+    
     
     const handleInputExercise = (event) => {
         setNewExercise({ ... newExercise, name: event.target.value });
@@ -51,7 +47,7 @@ function GymLog() {
     }
 
     const addExercise = () => {
-        if(newExercise.name && newExercise.weight >= 0 && newExercise.reps > 0){
+        if(newExercise.name && newExercise.weight >= 0 && newExercise.reps > 0 && newExercise.sets > 0){
             setExercises([... Exercises, newExercise])
             setNewExercise({ name: "", weight: null, reps: null })
         }
@@ -72,6 +68,7 @@ function GymLog() {
 
     return(
     <div>
+        
         <h1>Gym Log for {currentDate}</h1>
         <form className="addexercise">
             <input
@@ -100,6 +97,7 @@ function GymLog() {
             />
             <button
                 className="add-button"
+                type="button"
                 onClick={() => addExercise()}
             >ADD</button>
         </form>

@@ -7,8 +7,12 @@ import {
     signInWithEmailAndPassword,
     signOut
 } from "firebase/auth"
-import { auth } from "./firebase-config"
-
+import { 
+    getFirestore, 
+    collection, 
+    getDocs,
+} from 'firebase/firestore'
+import { auth, db } from "./firebase-config"
 
 function Header(){
     let hist = false
@@ -24,9 +28,28 @@ function Header(){
     const [registerPassword, setRegisterPassword] = useState("");
     const [loginEmail, setLoginEmail] = useState("");
     const [loginPassword, setLoginPassword] = useState("");
-
+    const currentDate = new Date().toLocaleDateString()
+    const [exerciseHist, setExerciseHist] = useState([{}])
+    const historyCollectionRef = collection(db, "History")
+    useEffect(() => {
+        const getExerciseHist = async () => {
+            //read from data
+            //set exercisehist
+            try {
+                const data = await getDocs(historyCollectionRef)
+                const filteredData = data.docs.map((doc) => ({
+                    ...doc.data(), 
+                    id: doc.id,
+                }))
+                setExerciseHist(filteredData)
+                //console.log(exerciseHist)
+            } catch(error) {
+                console.log(error)
+            }
+        }
+        getExerciseHist()
+    })
     const [user, setUser] = useState({})
-    
     useEffect(() => {
         onAuthStateChanged(auth, (currentUser) => setUser(currentUser))
         // Notice the empty dependency array, there to make sure the effect is only run once when the component mounts
@@ -173,7 +196,11 @@ function Header(){
         </div>
         <div className="history" id="historytab">
             <MdCancel className="history-cancel" id="historycancelbutton" onClick={()=>historyoff()}/>
-            <p>{loggedin ? "" : "Please log in"}</p>
+            <div>{loggedin ? exerciseHist.map((exercise) => (
+                <div>
+                    {} - {exercise.time} minutes - {exercise.part}
+                </div>)) : "Please Log In"}
+            </div>
         </div>
         <div className="userinfopage" id="loginpage">
                 <FaUser className="userpageicon"/>
